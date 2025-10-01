@@ -2,16 +2,16 @@ import json
 import glob
 import os
 
-def combine_json_batches(output_filename="training_dataset_final.json"):
+def combine_json_batches(output_filename=".data/training_dataset_final.json"):
     """
-    Finds all 'training_dataset_batch_*.json' files in the current directory,
+    Finds all 'training_dataset_batch_*.json' files in the .data directory,
     combines them, removes exact duplicates based on the 'instruction' field,
     and saves the unique pairs to a new JSON file.
     """
-    batch_files = sorted(glob.glob("training_dataset_batch_*.json"))
+    batch_files = sorted(glob.glob(".data/training_dataset_batch_*.json"))
     
     if not batch_files:
-        print("Error: No batch files found with the pattern 'training_dataset_batch_*.json'")
+        print("Error: No batch files found with the pattern '.data/training_dataset_batch_*.json'")
         return
 
     print(f"Found {len(batch_files)} batch files to combine.")

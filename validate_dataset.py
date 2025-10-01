@@ -8,7 +8,7 @@ import re
 # IMPORTANT: You must create a separate, blank Xcode project for each platform
 # and provide the correct paths below.
 
-DATASET_FILE_PATH = "training_dataset_final.json"
+DATASET_FILE_PATH = ".data/training_dataset_final.json"
 
 # --- Validation Harness Project Paths ---
 # Create one simple project for each platform and fill in the paths.
@@ -134,8 +134,8 @@ def main():
     end_time = time.time()
     print(f"\nValidation complete in {end_time - start_time:.2f} seconds.")
 
-    clean_filename = "training_dataset_clean.json"
-    failed_filename = "failed_pairs.json"
+    clean_filename = ".data/training_dataset_clean.json"
+    failed_filename = ".data/failed_pairs.json"
 
     with open(clean_filename, "w", encoding="utf-8") as f:
         json.dump(good_pairs, f, indent=4)
