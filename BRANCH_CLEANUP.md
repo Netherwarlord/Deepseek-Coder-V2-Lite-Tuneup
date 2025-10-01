@@ -27,7 +27,21 @@ The repository currently has the following branches:
 
 This will automatically delete all branches except `main`.
 
-### Method 3: Using the Python Script
+### Method 3: Using the Shell Script (Quick & Easy)
+
+This is the quickest method if you have git configured with push access.
+
+**Dry run (preview what will be deleted):**
+```bash
+./delete_branches.sh --dry-run
+```
+
+**Actually delete the branches:**
+```bash
+./delete_branches.sh
+```
+
+### Method 4: Using the Python Script
 
 You need a GitHub personal access token with `repo` permissions.
 
@@ -47,7 +61,7 @@ export GITHUB_TOKEN=YOUR_GITHUB_TOKEN
 python3 delete_branches.py
 ```
 
-### Method 4: Using Git Commands
+### Method 5: Using Git Commands
 
 **From your local machine:**
 
@@ -65,7 +79,7 @@ for branch in $(git branch -r | grep -v '\->' | grep -v 'origin/main' | sed 's/o
 done
 ```
 
-### Method 5: Using GitHub CLI (gh)
+### Method 6: Using GitHub CLI (gh)
 
 If you have GitHub CLI installed:
 
