@@ -11,11 +11,14 @@ def move_batch_file():
     """Finds training_dataset.json in the parent project folder, renames it, and moves it here."""
     # *** CHANGE: Hardcoded the correct source file path as requested ***
     src_file = os.path.join("..", "Deepseek-Coder-v2-SwiftUI-Training", "training_dataset.json")
-    data_dir = os.getcwd() # The current directory where the GUI is running.
+    data_dir = os.path.join(os.getcwd(), ".data") # The .data directory where batch files are stored.
 
     if not os.path.exists(src_file):
         messagebox.showerror("Error", f"Source file not found at:\n{src_file}")
         return
+    
+    # Ensure .data directory exists
+    os.makedirs(data_dir, exist_ok=True)
 
     try:
         batch_num = 1
@@ -25,7 +28,7 @@ def move_batch_file():
         dest_filename = f"training_dataset_batch_{batch_num:02d}.json"
         dest_path = os.path.join(data_dir, dest_filename)
 
-        # Move the file from the parent directory into the current directory with the new name
+        # Move the file from the parent directory into the .data directory with the new name
         shutil.move(src_file, dest_path)
         messagebox.showinfo("Success", f"Successfully moved and renamed batch to:\n{dest_path}")
     
@@ -75,7 +78,7 @@ def check_uniqueness():
         check_count_var.set(f"Last Check Count: {count}")
         messagebox.showinfo("Check Complete", f"Found {count} unique pairs.")
         
-        final_file = "training_dataset_final.json"
+        final_file = ".data/training_dataset_final.json"
         if os.path.exists(final_file):
             try:
                 os.remove(final_file)
