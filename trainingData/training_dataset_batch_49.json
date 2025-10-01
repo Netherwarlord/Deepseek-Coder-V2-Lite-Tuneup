@@ -1,0 +1,42 @@
+[
+  {
+    "instruction": "Implement a SwiftUI chart with Audio Graphs for visually impaired users, providing both visual and audio feedback for data trends.",
+    "output": "import SwiftUI\nimport Accessibility\n\nstruct AccessibleChartView: View {\n    let data: [Double] = [10, 20, 15, 30, 25, 40]\n    var body: some View {\n        VStack {\n            Chart(data) { value in\n                BarMark(x: .value(\"Index\", data.firstIndex(of: value) ?? 0), y: .value(\"Value\", value))\n            }\n            .accessibilityAudioGraph(data)\n            .accessibilityLabel(\"Sales Data\")\n            .accessibilityHint(\"Swipe up or down to hear data points.\")\n        }\n    }\n}"
+  },
+  {
+    "instruction": "Create a custom VoiceOver rotor in SwiftUI that allows users to quickly navigate between error messages in a form.",
+    "output": "import SwiftUI\n\nstruct ErrorFormView: View {\n    @State private var errors: [String] = [\"Email is invalid\", \"Password too short\"]\n    var body: some View {\n        Form {\n            TextField(\"Email\", text: .constant(\"\"))\n            SecureField(\"Password\", text: .constant(\"\"))\n            ForEach(errors, id: \\.self) { error in\n                Text(error).foregroundColor(.red)\n            }\n        }\n        .accessibilityRotor(\"Errors\", entries: errors.map { error in\n            AccessibilityRotorEntry(error, id: error)\n        })\n    }\n}"
+  },
+  {
+    "instruction": "Demonstrate scalable UI in SwiftUI using .dynamicTypeSize() to support all Dynamic Type settings, including accessibility sizes.",
+    "output": "import SwiftUI\n\nstruct ScalableTextView: View {\n    var body: some View {\n        Text(\"This text scales with Dynamic Type.\")\n            .font(.title)\n            .dynamicTypeSize(.xSmall ... .accessibility5)\n    }\n}"
+  },
+  {
+    "instruction": "Build a custom SwiftUI control with full accessibility support, including custom actions and accessibility values.",
+    "output": "import SwiftUI\n\nstruct AccessibleStepper: View {\n    @State private var value: Int = 0\n    var body: some View {\n        HStack {\n            Button(\"-\") { value -= 1 }\n            Text(\"Value: \\(value)\")\n            Button(\"+\") { value += 1 }\n        }\n        .accessibilityElement(children: .combine)\n        .accessibilityValue(\"Current value is \\(value)\")\n        .accessibilityAdjustableAction { direction in\n            switch direction {\n            case .increment: value += 1\n            case .decrement: value -= 1\n            default: break\n            }\n        }\n    }\n}"
+  },
+  {
+    "instruction": "Show how to use accessibility modifiers to make a custom SwiftUI chart accessible, including custom labels and hints for each data point.",
+    "output": "import SwiftUI\n\nstruct AccessibleBarChart: View {\n    let data: [Double] = [5, 10, 7, 12]\n    var body: some View {\n        HStack {\n            ForEach(data.indices, id: \\.self) { i in\n                Rectangle()\n                    .frame(width: 20, height: data[i] * 10)\n                    .accessibilityLabel(\"Bar \\(i + 1)\")\n                    .accessibilityValue(\"Value: \\(data[i])\")\n                    .accessibilityHint(\"Represents data point \\(i + 1)\")\n            }\n        }\n        .accessibilityElement(children: .contain)\n        .accessibilityLabel(\"Bar Chart\")\n    }\n}"
+  },
+  {
+    "instruction": "Implement a SwiftUI list with custom accessibility actions for VoiceOver users to mark items as favorites.",
+    "output": "import SwiftUI\n\nstruct FavoriteListView: View {\n    @State private var items = [\"Apple\", \"Banana\", \"Cherry\"]\n    @State private var favorites: Set<String> = []\n    var body: some View {\n        List(items, id: \\.self) { item in\n            HStack {\n                Text(item)\n                if favorites.contains(item) {\n                    Image(systemName: \"star.fill\").foregroundColor(.yellow)\n                }\n            }\n            .accessibilityAddTraits(favorites.contains(item) ? .isSelected : [])\n            .accessibilityAction(named: \"Favorite\") {\n                if favorites.contains(item) { favorites.remove(item) }\n                else { favorites.insert(item) }\n            }\n        }\n    }\n}"
+  },
+  {
+    "instruction": "Create a SwiftUI view that uses accessibilityFocus() to programmatically move VoiceOver focus to an error message after a failed form submission.",
+    "output": "import SwiftUI\n\nstruct FocusedErrorView: View {\n    @State private var showError = false\n    @AccessibilityFocusState private var errorFocused: Bool\n    var body: some View {\n        VStack {\n            Button(\"Submit\") { showError = true; errorFocused = true }\n            if showError {\n                Text(\"Submission failed.\")\n                    .foregroundColor(.red)\n                    .accessibilityFocused($errorFocused)\n            }\n        }\n    }\n}"
+  },
+  {
+    "instruction": "Demonstrate how to use accessibilityCustomContent to provide additional context for a SwiftUI view representing a complex data object.",
+    "output": "import SwiftUI\n\nstruct ProductDetailView: View {\n    let product = (name: \"MacBook Pro\", price: 2499.99, specs: \"M4, 32GB RAM, 1TB SSD\")\n    var body: some View {\n        VStack {\n            Text(product.name)\n            Text(\"$\" + String(format: \"%.2f\", product.price))\n            Text(product.specs)\n        }\n        .accessibilityCustomContent(\"Specs\", value: product.specs)\n        .accessibilityLabel(\"Product details for \\(product.name)\")\n    }\n}"
+  },
+  {
+    "instruction": "Show how to use accessibilityChildren to group related SwiftUI elements for a more logical VoiceOver navigation order.",
+    "output": "import SwiftUI\n\nstruct GroupedAccessibilityView: View {\n    var body: some View {\n        VStack {\n            HStack {\n                Text(\"First Name\")\n                TextField(\"\", text: .constant(\"\"))\n            }\n            HStack {\n                Text(\"Last Name\")\n                TextField(\"\", text: .constant(\"\"))\n            }\n        }\n        .accessibilityElement(children: .contain)\n        .accessibilityLabel(\"User Name Fields\")\n    }\n}"
+  },
+  {
+    "instruction": "Implement a SwiftUI chart that supports both Dynamic Type and VoiceOver, ensuring all data points are accessible and scalable.",
+    "output": "import SwiftUI\n\nstruct DynamicTypeAccessibleChart: View {\n    let data: [Double] = [2, 4, 6, 8]\n    var body: some View {\n        HStack {\n            ForEach(data.indices, id: \\.self) { i in\n                Rectangle()\n                    .frame(width: 20, height: data[i] * 10)\n                    .accessibilityLabel(\"Bar \\(i + 1)\")\n                    .accessibilityValue(\"Value: \\(data[i])\")\n            }\n        }\n        .dynamicTypeSize(.xSmall ... .accessibility5)\n        .accessibilityElement(children: .contain)\n        .accessibilityLabel(\"Bar Chart\")\n    }\n}"
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "instruction": "Demonstrate a SwiftData migration from a model with a 'name' property to a model with 'firstName' and 'lastName', using a custom migration policy.",
+    "output": "import SwiftData\n\n@Model class PersonV1 {\n    var name: String\n    init(name: String) { self.name = name }\n}\n\n@Model class PersonV2 {\n    var firstName: String\n    var lastName: String\n    init(firstName: String, lastName: String) {\n        self.firstName = firstName\n        self.lastName = lastName\n    }\n}\n\nstruct V1: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(1,0,0)\n    static var models: [any PersistentModel.Type] { [PersonV1.self] }\n}\nstruct V2: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(2,0,0)\n    static var models: [any PersistentModel.Type] { [PersonV2.self] }\n}\n\nlet migrator = ModelMigrator(\n    from: V1.self,\n    to: V2.self,\n    migrationPolicy: .custom { old, new in\n        if let old = old as? PersonV1, let new = new as? PersonV2 {\n            let parts = old.name.split(separator: \" \", maxSplits: 1)\n            new.firstName = String(parts.first ?? \"\")\n            new.lastName = String(parts.dropFirst().first ?? \"\")\n        }\n    }\n)"
+  },
+  {
+    "instruction": "Write a SwiftData #Predicate that fetches all Task objects due in the next 7 days, are not completed, and have a priority of .high or .critical.",
+    "output": "import SwiftData\n\nenum Priority: Int, Codable { case low, medium, high, critical }\n@Model class Task {\n    var dueDate: Date\n    var completed: Bool\n    var priority: Priority\n}\n\nlet nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: .now)!\nlet predicate = #Predicate<Task> { task in\n    task.dueDate >= .now &&\n    task.dueDate <= nextWeek &&\n    !task.completed &&\n    (task.priority == .high || task.priority == .critical)\n}" 
+  },
+  {
+    "instruction": "Show how to set up a SwiftData container that syncs a shared model with both the user's private and a public CloudKit database.",
+    "output": "import SwiftData\n\n@Model class SharedItem {\n    @Attribute(.unique) var id: UUID\n    var title: String\n    var isPublic: Bool\n    init(id: UUID = UUID(), title: String, isPublic: Bool) {\n        self.id = id\n        self.title = title\n        self.isPublic = isPublic\n    }\n}\n\nlet privateConfig = ModelConfiguration(\n    schema: Schema([SharedItem.self]),\n    cloudKitDatabase: .private(\"iCloud.com.example.app\")\n)\nlet publicConfig = ModelConfiguration(\n    schema: Schema([SharedItem.self]),\n    cloudKitDatabase: .public(\"iCloud.com.example.app\")\n)\nlet container = try ModelContainer(\n    for: SharedItem.self,\n    configurations: [privateConfig, publicConfig]\n)"
+  },
+  {
+    "instruction": "Create a SwiftData query using #Predicate to fetch all Book objects where the author's name contains 'Smith' (case-insensitive) and the publication year is after 2015.",
+    "output": "import SwiftData\n\n@Model class Book {\n    var author: String\n    var publicationYear: Int\n}\n\nlet predicate = #Predicate<Book> { book in\n    book.author.localizedCaseInsensitiveContains(\"Smith\") &&\n    book.publicationYear > 2015\n}"
+  },
+  {
+    "instruction": "Demonstrate how to use SwiftData's ModelMigrator to perform a lightweight migration that adds a new optional property to an existing model.",
+    "output": "import SwiftData\n\n@Model class EventV1 {\n    var title: String\n    init(title: String) { self.title = title }\n}\n@Model class EventV2 {\n    var title: String\n    var location: String?\n    init(title: String, location: String? = nil) {\n        self.title = title\n        self.location = location\n    }\n}\n\nstruct V1: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(1,0,0)\n    static var models: [any PersistentModel.Type] { [EventV1.self] }\n}\nstruct V2: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(2,0,0)\n    static var models: [any PersistentModel.Type] { [EventV2.self] }\n}\n\nlet migrator = ModelMigrator(from: V1.self, to: V2.self)\ntry migrator.migrate()"
+  },
+  {
+    "instruction": "Write a SwiftData #Predicate that fetches all Expense objects where the amount is between 100 and 500, the category is not 'Travel', and the date is in the current month.",
+    "output": "import SwiftData\n\n@Model class Expense {\n    var amount: Double\n    var category: String\n    var date: Date\n}\n\nlet calendar = Calendar.current\nlet startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: .now))!\nlet endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)!\nlet predicate = #Predicate<Expense> { expense in\n    expense.amount >= 100 &&\n    expense.amount <= 500 &&\n    expense.category != \"Travel\" &&\n    expense.date >= startOfMonth &&\n    expense.date <= endOfMonth\n}"
+  },
+  {
+    "instruction": "Show how to configure a SwiftData container for CloudKit sync that uses a custom zone and enables history tracking.",
+    "output": "import SwiftData\n\nlet config = ModelConfiguration(\n    schema: Schema([MyModel.self]),\n    cloudKitDatabase: .private(\"iCloud.com.example.app\", zone: \"CustomZone\"),\n    historyTracking: true\n)\nlet container = try ModelContainer(for: MyModel.self, configurations: config)"
+  },
+  {
+    "instruction": "Demonstrate a SwiftData migration that merges two models (Contact and Address) into a single model (ContactV2) with embedded address properties.",
+    "output": "import SwiftData\n\n@Model class Contact {\n    var name: String\n    var addressID: UUID\n}\n@Model class Address {\n    var id: UUID\n    var street: String\n    var city: String\n}\n@Model class ContactV2 {\n    var name: String\n    var street: String\n    var city: String\n}\n\nstruct V1: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(1,0,0)\n    static var models: [any PersistentModel.Type] { [Contact.self, Address.self] }\n}\nstruct V2: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(2,0,0)\n    static var models: [any PersistentModel.Type] { [ContactV2.self] }\n}\n\nlet migrator = ModelMigrator(\n    from: V1.self,\n    to: V2.self,\n    migrationPolicy: .custom { old, new, context in\n        if let oldContact = old as? Contact, let newContact = new as? ContactV2 {\n            newContact.name = oldContact.name\n            if let address = context.fetch(Address.self, id: oldContact.addressID) {\n                newContact.street = address.street\n                newContact.city = address.city\n            }\n        }\n    }\n)"
+  },
+  {
+    "instruction": "Write a SwiftData #Predicate that fetches all Project objects where any associated Task is overdue and not completed.",
+    "output": "import SwiftData\n\n@Model class Task {\n    var dueDate: Date\n    var completed: Bool\n}\n@Model class Project {\n    var tasks: [Task]\n}\n\nlet predicate = #Predicate<Project> { project in\n    project.tasks.contains { task in\n        task.dueDate < .now && !task.completed\n    }\n}"
+  },
+  {
+    "instruction": "Show how to use SwiftData to sync a model with CloudKit and filter fetches to only include records modified in the last 24 hours.",
+    "output": "import SwiftData\n\n@Model class LogEntry {\n    var message: String\n    var modified: Date\n}\n\nlet config = ModelConfiguration(\n    schema: Schema([LogEntry.self]),\n    cloudKitDatabase: .private(\"iCloud.com.example.logs\")\n)\nlet container = try ModelContainer(for: LogEntry.self, configurations: config)\n\nlet since = Calendar.current.date(byAdding: .hour, value: -24, to: .now)!\nlet predicate = #Predicate<LogEntry> { entry in\n    entry.modified >= since\n}"
+  },
+  {
+    "instruction": "Demonstrate a SwiftData migration that splits a single 'fullName' property into 'firstName' and 'lastName', handling cases where only one name is present.",
+    "output": "import SwiftData\n\n@Model class UserV1 {\n    var fullName: String\n}\n@Model class UserV2 {\n    var firstName: String\n    var lastName: String\n}\n\nstruct V1: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(1,0,0)\n    static var models: [any PersistentModel.Type] { [UserV1.self] }\n}\nstruct V2: VersionedSchema {\n    static var versionIdentifier: Schema.Version = .init(2,0,0)\n    static var models: [any PersistentModel.Type] { [UserV2.self] }\n}\n\nlet migrator = ModelMigrator(\n    from: V1.self,\n    to: V2.self,\n    migrationPolicy: .custom { old, new in\n        if let old = old as? UserV1, let new = new as? UserV2 {\n            let parts = old.fullName.split(separator: \" \", maxSplits: 1)\n            new.firstName = String(parts.first ?? \"\")\n            new.lastName = String(parts.dropFirst().first ?? \"\")\n        }\n    }\n)"
+  },
+  {
+    "instruction": "Write a SwiftData #Predicate that fetches all Meeting objects where all participants have RSVP'd 'yes' and the meeting is scheduled in the future.",
+    "output": "import SwiftData\n\n@Model class Participant {\n    var rsvp: String\n}\n@Model class Meeting {\n    var date: Date\n    var participants: [Participant]\n}\n\nlet predicate = #Predicate<Meeting> { meeting in\n    meeting.date > .now &&\n    meeting.participants.allSatisfy { $0.rsvp == \"yes\" }\n}"
+  },
+  {
+    "instruction": "Show how to use SwiftData's #Predicate to fetch all InventoryItem objects with a quantity less than a reorder threshold and last restocked more than 30 days ago.",
+    "output": "import SwiftData\n\n@Model class InventoryItem {\n    var quantity: Int\n    var lastRestocked: Date\n    var reorderThreshold: Int\n}\n\nlet threshold = 30\nlet cutoff = Calendar.current.date(byAdding: .day, value: -30, to: .now)!\nlet predicate = #Predicate<InventoryItem> { item in\n    item.quantity < item.reorderThreshold &&\n    item.lastRestocked < cutoff\n}"
+  }
+]

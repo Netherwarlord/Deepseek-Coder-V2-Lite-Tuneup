@@ -1,0 +1,82 @@
+[
+    {
+        "instruction": "Create a SwiftUI view for visionOS 26 that uses the new `.volumetricShadow(radius: depth:)` modifier to cast a realistic, soft shadow from a 3D Text element.",
+        "output": "import SwiftUI\n\nstruct VolumetricShadowView: View {\n    var body: some View {\n        VStack {\n            Text3D(\"Tahoe\")\n                .font(.system(size: 80, weight: .bold))\n                .volumetricShadow(radius: 1.5, depth: 0.5)\n        }\n        .padding(30)\n    }\n}"
+    },
+    {
+        "instruction": "Refactor this old ObservableObject class into a modern Swift class using the @Observable macro for OS26.",
+        "output": "import Observation\n\n// Old Code:\n// class AppState_Old: ObservableObject {\n//     @Published var isLoggedIn: Bool = false\n// }\n\n@Observable\nclass AppState {\n    var isLoggedIn: Bool = false\n}"
+    },
+    {
+        "instruction": "Write the code for a configurable WidgetKit widget for iOS 26 that allows a user to select a specific SF Symbol to display using the modern App Intents framework.",
+        "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct SymbolWidget: Widget {\n    let kind: String = \"SymbolWidget\"\n\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(kind: kind, intent: SelectSymbolIntent.self, provider: Provider()) {\n            SymbolEntryView(entry: $0)\n        }\n        .configurationDisplayName(\"Symbol Display\")\n        .description(\"Choose an SF Symbol to display on your Home Screen.\")\n    }\n}\n\nstruct SelectSymbolIntent: WidgetConfigurationIntent {\n    static var title: LocalizedStringResource = \"Select Symbol\"\n    \n    @Parameter(title: \"Symbol Name\", default: \"star.fill\")\n    var symbolName: String\n}"
+    },
+    {
+        "instruction": "For macOS 26, create a SwiftUI Table that uses the new `.tableColumnStyle(.insetGrouped)` to display a list of files with their sizes.",
+        "output": "import SwiftUI\n\nstruct FileItem: Identifiable {\n    let id = UUID()\n    let name: String\n    let size: String\n}\n\nstruct InsetTableView: View {\n    let files = [\n        FileItem(name: \"Document.pdf\", size: \"1.2 MB\"),\n        FileItem(name: \"Image.png\", size: \"4.5 MB\")\n    ]\n\n    var body: some View {\n        Table(files) {\n            TableColumn(\"Filename\", value: \\.name)\n            TableColumn(\"Size\", value: \\.size)\n        }\n        .tableColumnStyle(.insetGrouped)\n    }\n}"
+    },
+    {
+        "instruction": "Create an interactive complication for watchOS 26 that increments a counter each time it's tapped, using the latest interactive widget APIs.",
+        "output": "import WidgetKit\nimport SwiftUI\n\nstruct CounterWidgetView: View {\n    var entry: CounterEntry\n\n    var body: some View {\n        VStack {\n            Text(\"Taps\")\n            Text(\"\\(entry.count)\")\n                .font(.title)\n            IncrementIntentButton()\n        }\n    }\n}\n\nstruct IncrementIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Increment Counter\"\n\n    func perform() async throws -> some IntentResult {\n        // Logic to increment a shared counter would go here\n        return .result()\n    }\n}"
+    },
+    {
+        "instruction": "Generate a SwiftUI view for iOS 26 that utilizes the new `.liveActivityTint(_:)` modifier to dynamically color a Live Activity.",
+        "output": "import SwiftUI\nimport ActivityKit\n\nstruct OrderActivityView: View {\n    let context: ActivityViewContext<OrderAttributes>\n    \n    var body: some View {\n        VStack {\n            Text(\"Order Status: \\(context.state.status)\")\n        }\n        .liveActivityTint(context.state.isDelayed ? .yellow : .cyan)\n    }\n}"
+    },
+    {
+        "instruction": "Write a visionOS 26 view that creates a Portal and displays a 2D settings view inside of it, positioned 2 meters in front of the user.",
+        "output": "import SwiftUI\n\nstruct SettingsPortalView: View {\n    var body: some View {\n        Portal {\n            VStack {\n                Text(\"App Settings\")\n                    .font(.largeTitle)\n                Toggle(\"Enable Notifications\", isOn: .constant(true))\n            }\n            .padding(40)\n            .glassBackgroundEffect()\n        }\n        .position(x: 0, y: 1.5, z: -2)\n    }\n}"
+    },
+    {
+        "instruction": "Refactor this ObservableObject that manages a collection to use the modern @Observable macro and a simple array.",
+        "output": "import Observation\n\n// Old Code:\n// class ItemManager_Old: ObservableObject {\n//     @Published var items: [String] = []\n// }\n\n@Observable\nclass ItemManager {\n    var items: [String] = []\n}"
+    },
+    {
+        "instruction": "For iPadOS 26, create a view that uses the new `.adaptivePopover(sourceRect:in:)` modifier to present a popover from a precise location on the screen.",
+        "output": "import SwiftUI\n\nstruct AdaptivePopoverView: View {\n    @State private var showPopover = false\n    @State private var popoverSourceRect: CGRect = .zero\n\n    var body: some View {\n        VStack {\n            Text(\"Tap for Popover\")\n                .padding()\n                .background(GeometryReader { geo in\n                    Color.clear.onAppear {\n                        self.popoverSourceRect = geo.frame(in: .global)\n                    }\n                })\n                .onTapGesture {\n                    showPopover = true\n                }\n        }\n        .adaptivePopover(isPresented: $showPopover, sourceRect: popoverSourceRect) {\n            Text(\"This is a popover!\")\n                .padding()\n        }\n    }\n}"
+    },
+    {
+        "instruction": "Create a simple macOS 26 MenuBarExtra that uses a SwiftData query to display the number of items in a database.",
+        "output": "import SwiftUI\nimport SwiftData\n\nstruct ItemCountMenu: Scene {\n    @Query var items: [MyItem]\n    \n    var body: some Scene {\n        MenuBarExtra(\"\\(items.count) Items\", systemImage: \"list.bullet\") {\n            Text(\"You have \\(items.count) items in your database.\")\n        }\n    }\n}"
+    },
+    {
+        "instruction": "Write a TVOS 26 view that uses the `.focusEffect(.parallax)` modifier to create a deep parallax effect on a card view when it's focused.",
+        "output": "import SwiftUI\n\nstruct ParallaxCardView: View {\n    var body: some View {\n        ZStack {\n            AsyncImage(url: URL(string: \"https://example.com/poster.jpg\"))\n            Text(\"Movie Title\")\n                .font(.headline)\n                .padding()\n                .background(.thinMaterial)\n        }\n        .frame(width: 400, height: 250)\n        .focusEffect(.parallax)\n    }\n}"
+    },
+    {
+        "instruction": "Refactor this simple counter class from ObservableObject to use the @Observable macro.",
+        "output": "import Observation\n\n// Old Code:\n// class Counter_Old: ObservableObject {\n//     @Published var value: Int = 0\n//     func increment() { value += 1 }\n// }\n\n@Observable\nclass Counter {\n    var value: Int = 0\n    func increment() { value += 1 }\n}"
+    },
+    {
+        "instruction": "Create a WidgetKit widget for iOS 26 that displays data fetched from a URL and uses the new `.widgetRefreshPolicy(.after(date))` modifier.",
+        "output": "import WidgetKit\nimport SwiftUI\n\nstruct DataWidget: Widget {\n    let kind: String = \"DataWidget\"\n\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: kind, provider: Provider()) {\n            DataEntryView(entry: $0)\n        }\n        .configurationDisplayName(\"Data Display\")\n        .widgetRefreshPolicy(.after(Date().addingTimeInterval(60 * 15))) // Refresh every 15 minutes\n    }\n}"
+    },
+    {
+        "instruction": "For visionOS 26, write a view that toggles between an immersive space and a mixed-immersion space using the latest scene presentation APIs.",
+        "output": "import SwiftUI\n\nstruct ImmersiveToggleView: View {\n    @Environment(\\.openImmersiveSpace) private var openImmersiveSpace\n    @Environment(\\.dismissImmersiveSpace) private var dismissImmersiveSpace\n    @State private var isImmersive = false\n\n    var body: some View {\n        Toggle(\"Enter Immersive Space\", isOn: $isImmersive)\n            .onChange(of: isImmersive) {\n                Task {\n                    if isImmersive {\n                        await openImmersiveSpace(id: \"MyImmersiveScene\", style: .mixed)\n                    } else {\n                        await dismissImmersiveSpace()\n                    }\n                }\n            }\n    }\n}"
+    },
+    {
+        "instruction": "Create a SwiftUI view for iOS 26 that uses the new `.shareSheet(items:preview:)` modifier to provide a custom preview when sharing content.",
+        "output": "import SwiftUI\n\nstruct CustomShareView: View {\n    @State private var showShareSheet = false\n    let myContent = \"This is some text to share.\"\n\n    var body: some View {\n        Button(\"Share Content\") {\n            showShareSheet = true\n        }\n        .shareSheet(isPresented: $showShareSheet, items: [myContent]) {\n            // Custom preview for the share sheet\n            Label(\"My Shared Content\", systemImage: \"doc.text.fill\")\n                .font(.title)\n                .padding()\n        }\n    }\n}"
+    },
+    {
+        "instruction": "Refactor a SwiftUI view's state management from using a simple @StateObject to the modern @State and @Observable pattern.",
+        "output": "import SwiftUI\nimport Observation\n\n@Observable\nclass ViewModel {\n    var text: String = \"Hello\"\n}\n\n// Old View:\n// struct OldView: View {\n//     @StateObject private var viewModel = ViewModel()\n//     var body: some View {\n//         TextField(\"Enter text\", text: $viewModel.text)\n//     }\n// }\n\nstruct NewView: View {\n    @State private var viewModel = ViewModel()\n    var body: some View {\n        TextField(\"Enter text\", text: $viewModel.text)\n    }\n}"
+    },
+    {
+        "instruction": "For watchOS 26, create a complication that shows a circular gauge and updates its value based on an App Intent.",
+        "output": "import WidgetKit\nimport SwiftUI\n\nstruct GaugeComplicationView: View {\n    var entry: ProgressEntry\n\n    var body: some View {\n        Gauge(value: entry.progress, in: 0...1) {\n            Text(\"Progress\")\n        }\n        .gaugeStyle(.accessoryCircular)\n    }\n}"
+    },
+    {
+        "instruction": "Write a macOS 26 view that uses the `.fileImporter` modifier to let a user select a text file and display its contents.",
+        "output": "import SwiftUI\n\nstruct FileImporterView: View {\n    @State private var showImporter = false\n    @State private var fileContent = \"\"\n\n    var body: some View {\n        VStack {\n            TextEditor(text: $fileContent)\n            Button(\"Import Text File\") {\n                showImporter = true\n            }\n        }\n        .fileImporter(isPresented: $showImporter, allowedContentTypes: [.plainText]) { result in\n            do {\n                let fileURL = try result.get()\n                if fileURL.startAccessingSecurityScopedResource() {\n                    self.fileContent = try String(contentsOf: fileURL)\n                    fileURL.stopAccessingSecurityScopedResource()\n                }\n            } catch {\n                print(\"Error reading file: \\(error.localizedDescription)\")\n            }\n        }\n    }\n}"
+    },
+    {
+        "instruction": "Create a WidgetKit App Intent for OS26 that takes a user-provided string and updates the widget's content.",
+        "output": "import AppIntents\nimport WidgetKit\n\nstruct UpdateNoteIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Update Widget Note\"\n\n    @Parameter(title: \"New Note\")\n    var note: String\n\n    init(note: String) {\n        self.note = note\n    }\n    \n    init() {}\n\n    func perform() async throws -> some IntentResult {\n        // Logic to update the widget's timeline with the new note\n        WidgetCenter.shared.reloadTimelines(ofKind: \"NoteWidget\")\n        return .result()\n    }\n}"
+    },
+    {
+        "instruction": "For visionOS 26, design a view that presents an ornamental 3D model using the new `.ornament(attachmentAnchor:contentAlignment:)` modifier.",
+        "output": "import SwiftUI\n\nstruct OrnamentExampleView: View {\n    var body: some View {\n        RealityView {\n            // Content for the RealityView\n        }\n        .ornament(attachmentAnchor: .scene(.bottom)) {\n            HStack {\n                Button(\"Reset\") {}\n                Button(\"Info\") {}\n            }\n            .glassBackgroundEffect()\n        }\n    }\n}"
+    }
+]

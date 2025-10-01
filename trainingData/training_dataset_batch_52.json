@@ -1,0 +1,50 @@
+[
+  {
+    "instruction": "Configure a SwiftData model for seamless CloudKit syncing, including custom conflict resolution for a shared note-taking app.",
+    "output": "import SwiftData\nimport CloudKit\n\n@Model class Note: Identifiable {\n    @Attribute(.unique) var id: UUID = UUID()\n    var title: String\n    var content: String\n    var lastModified: Date\n    init(title: String, content: String) {\n        self.title = title\n        self.content = content\n        self.lastModified = .now\n    }\n}\n\nstruct NoteApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n                .modelContainer(for: Note.self, cloudKitDatabase: .private("iCloud.com.example.notes"), conflictPolicy: .custom { local, remote in\n                    // Prefer the note with the latest modification date\n                    return local.lastModified > remote.lastModified ? local : remote\n                })\n        }\n    }\n}" 
+  },
+  {
+    "instruction": "Demonstrate a SwiftData migration from a single 'Task' entity to a normalized model with 'Task' and 'Category', including data transformation.",
+    "output": "import SwiftData\n\n// v1\n@Model class TaskV1 {\n    var title: String\n    var category: String\n}\n// v2\n@Model class Category {\n    @Attribute(.unique) var name: String\n    var color: String\n    init(name: String, color: String) { self.name = name; self.color = color }\n}\n@Model class Task {\n    var title: String\n    var category: Category\n}\n\nstruct Migration: ModelMigration {\n    static func migrate(from old: TaskV1, to new: Task, context: ModelMigrationContext) {\n        let cat = context.fetchOrCreate(Category.self, uniqueKey: old.category) {\n            Category(name: old.category, color: \"gray\")\n        }\n        new.title = old.title\n        new.category = cat\n    }\n}" 
+  },
+  {
+    "instruction": "Write a SwiftData #Predicate query to fetch all users with at least 3 devices and a verified email, sorted by last login.",
+    "output": "import SwiftData\n\n@Model class User {\n    var email: String\n    var isVerified: Bool\n    var lastLogin: Date\n    var devices: [Device]\n}\n@Model class Device {\n    var name: String\n    var osVersion: String\n}\n\nlet predicate = #Predicate<User> { user in\n    user.isVerified && user.devices.count >= 3\n}\nlet descriptor = FetchDescriptor<User>(predicate: predicate, sortBy: [SortDescriptor(\\.lastLogin, order: .reverse)])\nlet users = try modelContext.fetch(descriptor)" 
+  },
+  {
+    "instruction": "Show how to use CloudKit sharing in SwiftData to allow collaborative editing of a project entity, including participant management.",
+    "output": "import SwiftData\nimport CloudKit\n\n@Model class Project: Identifiable {\n    @Attribute(.unique) var id: UUID = UUID()\n    var name: String\n    var details: String\n}\n\nstruct ProjectShareView: View {\n    @Environment(\.modelContext) private var context\n    @Query var projects: [Project]\n    @State private var share: CKShare?\n    @State private var controller: UICloudSharingController?\n    var body: some View {\n        List(projects) { project in\n            Button(\"Share\") {\n                let share = try? context.share(project)\n                self.share = share\n                if let share = share {\n                    let controller = UICloudSharingController(share: share, container: CKContainer.default())\n                    controller.availablePermissions = [.allowReadWrite, .allowPrivate] \n                    self.controller = controller\n                    UIApplication.shared.windows.first?.rootViewController?.present(controller, animated: true)\n                }\n            }\n        }\n    }\n}" 
+  },
+  {
+    "instruction": "Implement a SwiftData migration that merges two models: 'Person' and 'Contact', resolving duplicate records by email.",
+    "output": "import SwiftData\n\n// v1\n@Model class Person {\n    var name: String\n    var email: String\n}\n@Model class Contact {\n    var fullName: String\n    var email: String\n}\n// v2\n@Model class User {\n    var name: String\n    var email: String\n}\n\nstruct MergeMigration: ModelMigration {\n    static func migrate(context: ModelMigrationContext) {\n        let allPeople = context.fetchAll(Person.self)\n        let allContacts = context.fetchAll(Contact.self)\n        var seenEmails = Set<String>()\n        for person in allPeople {\n            if !seenEmails.contains(person.email) {\n                let user = User(name: person.name, email: person.email)\n                context.insert(user)\n                seenEmails.insert(person.email)\n            }\n        }\n        for contact in allContacts {\n            if !seenEmails.contains(contact.email) {\n                let user = User(name: contact.fullName, email: contact.email)\n                context.insert(user)\n                seenEmails.insert(contact.email)\n            }\n        }\n    }\n}" 
+  },
+  {
+    "instruction": "Create a SwiftData #Predicate query to find all orders placed in the last 7 days with a total over $100, using Date and Decimal.",
+    "output": "import SwiftData\n\n@Model class Order {\n    var date: Date\n    var total: Decimal\n}\nlet oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: .now)!\nlet predicate = #Predicate<Order> { order in\n    order.date >= oneWeekAgo && order.total > 100\n}\nlet orders = try modelContext.fetch(FetchDescriptor<Order>(predicate: predicate))" 
+  },
+  {
+    "instruction": "Demonstrate how to use SwiftData's cloudKitDatabase: .shared to sync a shopping list model across multiple Apple IDs.",
+    "output": "import SwiftData\n\n@Model class ShoppingItem: Identifiable {\n    @Attribute(.unique) var id: UUID = UUID()\n    var name: String\n    var isPurchased: Bool\n}\n\nstruct ShoppingListApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ShoppingListView()\n                .modelContainer(for: ShoppingItem.self, cloudKitDatabase: .shared(\"iCloud.com.example.shopping\"))\n        }\n    }\n}" 
+  },
+  {
+    "instruction": "Show a SwiftData migration that splits a 'FullName' property into 'firstName' and 'lastName', handling edge cases.",
+    "output": "import SwiftData\n\n// v1\n@Model class PersonV1 {\n    var fullName: String\n}\n// v2\n@Model class Person {\n    var firstName: String\n    var lastName: String\n}\n\nstruct NameSplitMigration: ModelMigration {\n    static func migrate(from old: PersonV1, to new: Person, context: ModelMigrationContext) {\n        let parts = old.fullName.split(separator: \" \", maxSplits: 1, omittingEmptySubsequences: true)\n        new.firstName = parts.first.map(String.init) ?? \"\"\n        new.lastName = parts.dropFirst().first.map(String.init) ?? \"\"\n    }\n}" 
+  },
+  {
+    "instruction": "Write a SwiftData #Predicate query to fetch all books whose title contains 'Swift' and were published after 2023.",
+    "output": "import SwiftData\n\n@Model class Book {\n    var title: String\n    var published: Int\n}\nlet predicate = #Predicate<Book> { book in\n    book.title.contains(\"Swift\") && book.published > 2023\n}\nlet books = try modelContext.fetch(FetchDescriptor<Book>(predicate: predicate))" 
+  },
+  {
+    "instruction": "Demonstrate using SwiftData's ModelMigrator to perform a custom migration with progress reporting and error handling.",
+    "output": "import SwiftData\n\nstruct CustomMigrator: ModelMigrator {\n    func migrate(context: ModelMigrationContext, progress: (Double) -> Void) throws {\n        let oldItems = context.fetchAll(OldModel.self)\n        let total = Double(oldItems.count)\n        for (i, old) in oldItems.enumerated() {\n            // ... migration logic ...\n            progress(Double(i+1)/total)\n        }\n    }\n}\n// Usage\nlet migrator = CustomMigrator()\ntry migrator.migrate(context: migrationContext) { prog in\n    print(\"Migration progress: \\(prog * 100)%\")\n}" 
+  },
+  {
+    "instruction": "Show how to use #Predicate to fetch all employees whose department is 'Engineering' and salary is in the top 10%.",
+    "output": "import SwiftData\n\n@Model class Employee {\n    var name: String\n    var department: String\n    var salary: Double\n}\nlet all = try modelContext.fetch(FetchDescriptor<Employee>())\nlet threshold = all.map(\\.salary).sorted().suffix(Int(Double(all.count)*0.1)).first ?? 0\nlet predicate = #Predicate<Employee> { emp in\n    emp.department == \"Engineering\" && emp.salary >= threshold\n}\nlet topEngineers = try modelContext.fetch(FetchDescriptor<Employee>(predicate: predicate))" 
+  },
+  {
+    "instruction": "Implement a SwiftData model with a computed property that is not persisted, and show how to use it in a #Predicate query.",
+    "output": "import SwiftData\n\n@Model class Workout {\n    var start: Date\n    var end: Date\n    var calories: Double\n    var duration: TimeInterval { end.timeIntervalSince(start) } // not persisted\n}\nlet predicate = #Predicate<Workout> { w in\n    w.duration > 3600 && w.calories > 500\n}\nlet longWorkouts = try modelContext.fetch(FetchDescriptor<Workout>(predicate: predicate))" 
+  }
+]

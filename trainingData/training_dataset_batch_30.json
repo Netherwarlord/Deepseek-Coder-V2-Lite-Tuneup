@@ -1,0 +1,82 @@
+[
+  {
+    "instruction": "Create a WidgetKit widget for iOS26 that displays the user's next alarm using App Intents.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct AlarmIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Next Alarm\"\n}\n\nstruct AlarmWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"AlarmWidget\",\n            intent: AlarmIntent.self,\n            provider: .static\n        ) { entry in\n            Text(\"Alarm: 7:00 AM\") // Replace with dynamic value\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published Int property to @Observable for macOS26.",
+    "output": "// Old Code:\n// class Counter: ObservableObject {\n//     @Published var count: Int = 0\n// }\n\nimport SwiftUI\n\n@Observable\nclass Counter {\n    var count: Int = 0\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for visionOS26 that displays a 3D avatar preview, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\nimport RealityKit\n\nstruct AvatarIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Avatar\"\n    @Parameter(title: \"Avatar Name\") var avatarName: String\n}\n\nstruct AvatarWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"AvatarWidget\",\n            intent: AvatarIntent.self,\n            provider: .static\n        ) { entry in\n            RealityView { content in\n                if let model = try? await ModelEntity(named: entry.avatarName) {\n                    content.add(model)\n                }\n            }\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published Bool property to @Observable for watchOS26.",
+    "output": "// Old Code:\n// class SwitchStore: ObservableObject {\n//     @Published var isOn: Bool = false\n// }\n\nimport SwiftUI\n\n@Observable\nclass SwitchStore {\n    var isOn: Bool = false\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for macOS26 that displays the current CPU usage, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct CPUIntent: AppIntent {\n    static var title: LocalizedStringResource = \"CPU Usage\"\n}\n\nstruct CPUWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"CPUWidget\",\n            intent: CPUIntent.self,\n            provider: .static\n        ) { entry in\n            Text(\"CPU: 42%\") // Replace with dynamic value\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for tvOS26 that displays the user's favorite movie, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct MovieIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Movie\"\n    @Parameter(title: \"Movie Name\") var movieName: String\n}\n\nstruct MovieWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"MovieWidget\",\n            intent: MovieIntent.self,\n            provider: .static\n        ) { entry in\n            Text(entry.movieName)\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published array of Strings to @Observable for iPadOS26.",
+    "output": "// Old Code:\n// class NotesStore: ObservableObject {\n//     @Published var notes: [String] = []\n// }\n\nimport SwiftUI\n\n@Observable\nclass NotesStore {\n    var notes: [String] = []\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for watchOS26 that displays the user's hydration level, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct HydrationIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Hydration\"\n}\n\nstruct HydrationWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"HydrationWidget\",\n            intent: HydrationIntent.self,\n            provider: .static\n        ) { entry in\n            Text(\"Hydration: 60%\") // Replace with dynamic value\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Create a SwiftUI view for visionOS26 that uses the new ImmersiveSpace API to present a virtual workspace.",
+    "output": "import SwiftUI\nimport RealityKit\n\nstruct WorkspaceImmersiveView: View {\n    var body: some View {\n        ImmersiveSpace {\n            Model3D(named: \"Workspace\")\n                .frame(width: 3, height: 2, depth: 2)\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published Double property to @Observable for tvOS26.",
+    "output": "// Old Code:\n// class RatingStore: ObservableObject {\n//     @Published var rating: Double = 0.0\n// }\n\nimport SwiftUI\n\n@Observable\nclass RatingStore {\n    var rating: Double = 0.0\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for iOS26 that displays the user's daily step goal, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct StepGoalIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Step Goal\"\n}\n\nstruct StepGoalWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"StepGoalWidget\",\n            intent: StepGoalIntent.self,\n            provider: .static\n        ) { entry in\n            Text(\"Goal: 12,000\") // Replace with dynamic value\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for iPadOS26 that displays the user's favorite artist, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct ArtistIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Artist\"\n    @Parameter(title: \"Artist Name\") var artistName: String\n}\n\nstruct ArtistWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"ArtistWidget\",\n            intent: ArtistIntent.self,\n            provider: .static\n        ) { entry in\n            Text(entry.artistName)\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published Float property to @Observable for visionOS26.",
+    "output": "// Old Code:\n// class FloatStore: ObservableObject {\n//     @Published var value: Float = 0.0\n// }\n\nimport SwiftUI\n\n@Observable\nclass FloatStore {\n    var value: Float = 0.0\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for macOS26 that displays the user's current focus mode, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct FocusModeIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Focus Mode\"\n}\n\nstruct FocusModeWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"FocusModeWidget\",\n            intent: FocusModeIntent.self,\n            provider: .static\n        ) { entry in\n            Text(\"Focus: Work\") // Replace with dynamic value\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for tvOS26 that displays the user's favorite TV show, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct TVShowIntent: AppIntent {\n    static var title: LocalizedStringResource = \"TV Show\"\n    @Parameter(title: \"Show Name\") var showName: String\n}\n\nstruct TVShowWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"TVShowWidget\",\n            intent: TVShowIntent.self,\n            provider: .static\n        ) { entry in\n            Text(entry.showName)\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published array of Ints to @Observable for iOS26.",
+    "output": "// Old Code:\n// class ScoresStore: ObservableObject {\n//     @Published var scores: [Int] = []\n// }\n\nimport SwiftUI\n\n@Observable\nclass ScoresStore {\n    var scores: [Int] = []\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for watchOS26 that displays the user's current workout, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct WorkoutIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Workout\"\n    @Parameter(title: \"Workout Name\") var workoutName: String\n}\n\nstruct WorkoutWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"WorkoutWidget\",\n            intent: WorkoutIntent.self,\n            provider: .static\n        ) { entry in\n            Text(entry.workoutName)\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Create a SwiftUI view for iOS26 that uses the new FocusedContent API to highlight a selected contact.",
+    "output": "import SwiftUI\n\nstruct ContactListView: View {\n    @State private var selected: Int?\n    var body: some View {\n        FocusedContent(selected: $selected) {\n            ForEach(0..<10) { i in\n                Text(\"Contact \\(i)\")\n                    .background(selected == i ? Color.green : Color.clear)\n            }\n        }\n    }\n}\n"
+  },
+  {
+    "instruction": "Refactor an ObservableObject with a published Color property to @Observable for macOS26.",
+    "output": "// Old Code:\n// class ThemeStore: ObservableObject {\n//     @Published var color: Color = .white\n// }\n\nimport SwiftUI\n\n@Observable\nclass ThemeStore {\n    var color: Color = .white\n}\n"
+  },
+  {
+    "instruction": "Create a WidgetKit widget for visionOS26 that displays the user's favorite location, configurable via AppIntent.",
+    "output": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct LocationIntent: AppIntent {\n    static var title: LocalizedStringResource = \"Location\"\n    @Parameter(title: \"Location Name\") var locationName: String\n}\n\nstruct LocationWidget: Widget {\n    var body: some WidgetConfiguration {\n        AppIntentConfiguration(\n            kind: \"LocationWidget\",\n            intent: LocationIntent.self,\n            provider: .static\n        ) { entry in\n            Text(entry.locationName)\n        }\n    }\n}\n"
+  }
+]
